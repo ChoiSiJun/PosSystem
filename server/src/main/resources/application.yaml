@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: commerce
+
+  datasource:
+    url: jdbc:postgresql://34.64.50.124:5432/forjun
+    username: forjun
+    password: forjun406
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    com.pos.commerce: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+    org.springframework.web.servlet: DEBUG
+    org.springframework.web.filter: DEBUG

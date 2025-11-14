@@ -1,22 +1,45 @@
-# Node modules
+# =====================
+# Node.js / React
+# =====================
 node_modules/
-
-# Vite cache
 dist/
 .vite/
-
-# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Editor
-.vscode/
+# =====================
+# Spring Boot / Java
+# =====================
+# 빌드 결과물
+server/target/
+server/out/
+*.class
+
+# Gradle / Maven
+.gradle/
+build/
+!.mvn/wrapper/maven-wrapper.jar
+!.gradle/wrapper/gradle-wrapper.jar
+*.jar
+*.war
+
+# IntelliJ / Eclipse 프로젝트 파일
+*.iml
 .idea/
+*.classpath
+*.project
+*.settings/
 
-# TypeScript
-*.tsbuildinfo
-
-# OS files
+# =====================
+# Editor / OS
+# =====================
+.vscode/
 .DS_Store
 Thumbs.db
+
+# =====================
+# TypeScript / Vite / 기타 캐시
+# =====================
+*.tsbuildinfo
+.vite/
