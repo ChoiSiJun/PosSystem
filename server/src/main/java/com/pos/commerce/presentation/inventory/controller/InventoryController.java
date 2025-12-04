@@ -39,8 +39,8 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
+    /* @재고 생성 */
     @PostMapping("/{productId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> createInventory(
             @PathVariable Long productId,
             @RequestBody Integer initialQuantity) {
@@ -49,6 +49,7 @@ public class InventoryController {
                 .body(ApiResponse.success("재고가 생성되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 조회 */
     @GetMapping("/product/{productId}")
     public ResponseEntity<ApiResponse<InventoryResponse>> getInventoryByProduct(@PathVariable Long productId) {
         return inventoryService.getInventoryByProductId(new GetInventoryByProductIdQuery(productId))
@@ -56,6 +57,7 @@ public class InventoryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /* @모든 재고 조회 */
     @GetMapping
     public ResponseEntity<ApiResponse<List<InventoryResponse>>> getAllInventories() {
         List<InventoryResponse> inventories = inventoryService.getAllInventories(new GetAllInventoriesQuery()).stream()
@@ -64,6 +66,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success(inventories));
     }
 
+    /* @재고 증가 */
     @PostMapping("/{productId}/increase")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> increaseStock(
@@ -81,6 +84,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success("재고가 증가되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 감소 */
     @PostMapping("/{productId}/decrease")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> decreaseStock(
@@ -98,6 +102,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success("재고가 감소되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 예약 */
     @PostMapping("/{productId}/reserve")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> reserveStock(
@@ -115,6 +120,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success("재고가 예약되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 예약 해제 */
     @PostMapping("/{productId}/release")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> releaseReservation(
@@ -132,6 +138,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success("예약이 해제되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 예약 확정 */
     @PostMapping("/{productId}/confirm")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<InventoryResponse>> confirmReservation(
@@ -149,6 +156,7 @@ public class InventoryController {
         return ResponseEntity.ok(ApiResponse.success("예약이 확정되었습니다.", InventoryResponse.from(inventory)));
     }
 
+    /* @재고 거래 내역 조회 */
     @GetMapping("/{productId}/transactions")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<List<InventoryTransaction>>> getTransactionHistory(@PathVariable Long productId) {

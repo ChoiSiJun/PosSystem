@@ -1,23 +1,14 @@
 package com.pos.commerce.domain.shop;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.pos.commerce.domain.user.User;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -38,53 +29,37 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* 매장 코드 */
     @Column(nullable = false, unique = true)
-    private String name;
+    private String shopCode;
 
-    @Column(length = 1000)
-    private String description;
-
-    @Column(length = 255)
-    private String address;
-
-    @Enumerated(EnumType.STRING)
+    /* 매장 비밀번호 */
     @Column(nullable = false)
-    private ShopStatus status;
+    private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    /* 관리자 비밀번호 */
+    @Column(nullable = false)
+    private String adminPassword;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ShopMembership> memberships = new ArrayList<>();
-
+    /* 생성일시 */
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /* 수정일시 */
     private LocalDateTime updatedAt;
 
+
+    /* 생성 */
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (status == null) {
-            status = ShopStatus.ACTIVE;
-        }
     }
 
+    /* 수정 */
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    public void addMembership(ShopMembership membership) {
-        memberships.add(membership);
-        membership.assignShop(this);
-    }
-
-    public void changeStatus(ShopStatus status) {
-        this.status = status;
     }
 }
 

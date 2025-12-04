@@ -1,4 +1,4 @@
-package com.pos.commerce.infrastructure.security;
+package com.pos.commerce.config.security;
 
 import com.pos.commerce.domain.user.Role;
 import com.pos.commerce.domain.user.User;

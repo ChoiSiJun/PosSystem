@@ -36,8 +36,8 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    /* @결제 생성 */
     @PostMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody PaymentRequest request) {
         List<PaymentItemCommand> items = request.getItems() != null
                 ? request.getItems().stream()
@@ -57,16 +57,16 @@ public class PaymentController {
                 .body(ApiResponse.success("결제가 생성되었습니다.", PaymentResponse.from(created)));
     }
 
+    /* @결제 조회 */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> getPayment(@PathVariable Long id) {
         return paymentService.getPaymentById(new GetPaymentByIdQuery(id))
                 .map(payment -> ResponseEntity.ok(ApiResponse.success(PaymentResponse.from(payment))))
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /* @사용자별 결제 조회 */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPaymentsByUser(@PathVariable String userId) {
         List<PaymentResponse> payments = paymentService.getPaymentsByUserId(new GetPaymentsByUserIdQuery(userId)).stream()
                 .map(PaymentResponse::from)
@@ -74,27 +74,28 @@ public class PaymentController {
         return ResponseEntity.ok(ApiResponse.success(payments));
     }
 
+    /* @결제 처리 */
     @PostMapping("/{id}/process")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> processPayment(@PathVariable Long id) {
         Payment processed = paymentService.processPayment(new ProcessPaymentCommand(id));
         return ResponseEntity.ok(ApiResponse.success("결제가 처리되었습니다.", PaymentResponse.from(processed)));
     }
 
+    /* @결제 취소 */
     @PostMapping("/{id}/cancel")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> cancelPayment(@PathVariable Long id) {
         Payment cancelled = paymentService.cancelPayment(new CancelPaymentCommand(id));
         return ResponseEntity.ok(ApiResponse.success("결제가 취소되었습니다.", PaymentResponse.from(cancelled)));
     }
 
+    /* @결제 완료 */
     @PostMapping("/{id}/complete")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> completePayment(@PathVariable Long id) {
         Payment completed = paymentService.completePayment(new CompletePaymentCommand(id));
         return ResponseEntity.ok(ApiResponse.success("결제가 완료되었습니다.", PaymentResponse.from(completed)));
     }
 
+    /* @결제 아이템 변환 */
     private PaymentItemCommand toItemCommand(PaymentItemRequest itemRequest) {
         return new PaymentItemCommand(
                 itemRequest.getProductId(),

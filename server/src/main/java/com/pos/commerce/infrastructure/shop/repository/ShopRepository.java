@@ -10,7 +10,7 @@ import com.pos.commerce.domain.shop.Shop;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
-    Optional<Shop> findByName(String name);
+    Optional<Shop> findByShopCode(String shopCode);
     List<Shop> findByOwnerId(Long ownerId);
 }
 

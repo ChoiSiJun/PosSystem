@@ -1,4 +1,4 @@
-package com.pos.commerce.infrastructure.security;
+package com.pos.commerce.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +28,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .httpBasic(httpBasic -> {});

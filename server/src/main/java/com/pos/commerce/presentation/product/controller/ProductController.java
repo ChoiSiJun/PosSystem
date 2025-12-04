@@ -40,8 +40,8 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /* @상품 생성 */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@RequestBody ProductRequest request) {
         CreateProductCommand command = new CreateProductCommand(
                 request.getProductCode(),
@@ -57,6 +57,7 @@ public class ProductController {
                 .body(ApiResponse.success("상품이 생성되었습니다.", ProductResponse.from(created)));
     }
 
+    /* @상품 수정 */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
@@ -75,19 +76,21 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success("상품이 수정되었습니다.", ProductResponse.from(updated)));
     }
 
+
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(new DeleteProductCommand(id));
         return ResponseEntity.ok(ApiResponse.success("상품이 삭제되었습니다.", null));
     }
 
+    /* @상품 조회 */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProduct(@PathVariable Long id) {
         return productService.getProductById(new GetProductByIdQuery(id))
                 .map(product -> ResponseEntity.ok(ApiResponse.success(ProductResponse.from(product))))
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @GetMapping("/code/{productCode}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductByCode(@PathVariable String productCode) {
@@ -96,6 +99,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /* @모든 상품 조회 */
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
         List<ProductResponse> products = productService.getAllProducts(new GetAllProductsQuery()).stream()
@@ -104,6 +108,7 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success(products));
     }
 
+    /* @활성 상품 조회 */
     @GetMapping("/active")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getActiveProducts() {
         List<ProductResponse> products = productService.getActiveProducts(new GetActiveProductsQuery()).stream()
@@ -112,8 +117,8 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success(products));
     }
 
+    /* @재고 수정 */
     @PatchMapping("/{id}/stock")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateStock(
             @PathVariable Long id,
             @RequestBody Integer quantity) {

@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShopRequest {
-    private String name;
-    private String description;
-    private String address;
-    private Long ownerId;
+    private String shopCode;
+    private String password;
+    private String adminPassword;
 }
 
 
