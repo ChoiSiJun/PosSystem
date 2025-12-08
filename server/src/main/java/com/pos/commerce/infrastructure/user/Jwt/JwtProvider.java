@@ -3,9 +3,11 @@ package com.pos.commerce.infrastructure.user.Jwt;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -28,15 +30,20 @@ public class JwtProvider {
     /**
      * JWT 토큰 생성
      */
-    public String generateToken(String username) {
+    public String generateToken(String username,Map<String,String> claim) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityInMilliseconds);
 
+        Claims claims = Jwts.claims();
+        claim.forEach((key, value) -> {
+            claims.put(key, value);
+        });
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)                  // 토큰 발급 시각
                 .setExpiration(expiryDate)        // 만료 시각
                 .signWith(key, SignatureAlgorithm.HS256) // 안전하게 HS256 서명
+                .setClaims(claims)
                 .compact();
     }
 

@@ -1,48 +1,38 @@
 // hooks/useMutationWithLoading.ts
-import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
-import { useAppDispatch } from 'store/ReduxHooks';
-import { mutationLoadingOn, mutationLoadingOff } from '@store/slice/LoadingSlice';
-import apiErrorHandler from '@config/handlers/apiErrorHandler';
-import { AxiosError } from 'axios';
+
+import {
+  useMutation,
+  type UseMutationOptions,
+  type UseMutationResult,
+} from '@tanstack/react-query';
+import { useAppDispatch } from '../store/ReduxHooks';
+import { lodingOff, lodingOn } from '@/features/loading/LoadingSlice';
 
 export const useMutationWithLoading = <TData = unknown, TError = unknown, TVariables = void>(
-  options?: UseMutationOptions<TData, TError, TVariables> // options를 optional로
+  options?: UseMutationOptions<TData, TError, TVariables>
 ): UseMutationResult<TData, TError, TVariables> => {
   const dispatch = useAppDispatch();
-  return useMutation({
-    ...(options ?? {}), // options가 없으면 빈 객체를 대입
-    onMutate: async (variables) => {
-      dispatch(mutationLoadingOn());
-      if (options?.onMutate) {
-        await options.onMutate(variables);
-      }
-    },
-    retry: (failureCount, error) => {
-      if (error instanceof AxiosError && [401, 403, 404].includes(error.response?.status ?? 0)) {
-        return false;
-      }
 
-      return failureCount < 3; // 기본 3회 재시도
+  return useMutation({
+    ...options,
+
+    onMutate: async (variables, context) => {
+      dispatch(lodingOn());
+      await options?.onMutate?.(variables, context);
     },
-    onSuccess: (data, variables, context) => {
-      dispatch(mutationLoadingOff());
-      if (options?.onSuccess) {
-        options.onSuccess(data, variables, context);
-      }
+
+    onSettled: (data, error, variables, context, mutation) => {
+      dispatch(lodingOff());
+      options?.onSettled?.(data, error, variables, context, mutation);
     },
-    onError: (error, variables, context) => {
-      dispatch(mutationLoadingOff());
-      if (options?.onError) {
-        options.onError(error, variables, context);
-      } else if (error) {
-        apiErrorHandler(error);
-      }
+
+    // Add the 'mutation' argument to the onSuccess callback.
+    onSuccess: (data, variables, context, mutation) => {
+      options?.onSuccess?.(data, variables, context, mutation);
     },
-    onSettled: (data, error, variables, context) => {
-      dispatch(mutationLoadingOff());
-      if (options?.onSettled) {
-        options.onSettled(data, error, variables, context);
-      }
+
+    onError: (error, variables, context, mutation) => {
+      options?.onError?.(error, variables, context, mutation);
     },
   });
 };

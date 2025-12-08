@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ShopRequest {
     private String shopCode;
+    private String shopName;
     private String password;
     private String adminPassword;
 }

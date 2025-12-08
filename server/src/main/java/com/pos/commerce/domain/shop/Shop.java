@@ -33,6 +33,10 @@ public class Shop {
     @Column(nullable = false, unique = true)
     private String shopCode;
 
+    /* 매장 이름 */
+    @Column(nullable = false)
+    private String shopName;
+
     /* 매장 비밀번호 */
     @Column(nullable = false)
     private String password;

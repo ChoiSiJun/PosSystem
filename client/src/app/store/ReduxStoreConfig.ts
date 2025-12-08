@@ -3,11 +3,11 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import sessionStorage from 'redux-persist/lib/storage/session';
 import LoadingSlice from '@/features/loading/LoadingSlice';
-import AuthSlice from '@/features/auth/slice/AuthSlice';
+import ShopSlice from '@/features/shop/slice/ShopSlice';
 
 const reducers = combineReducers({
   loading: LoadingSlice,
-  auth: AuthSlice,
+  shop: ShopSlice,
 });
 
 const persistConfig = {

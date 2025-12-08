@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pos.commerce.application.shop.ShopService;
+import com.pos.commerce.application.shop.command.AuthenticationShopCommand;
 import com.pos.commerce.application.shop.command.CreateShopCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
 
@@ -38,6 +39,7 @@ public class ShopController {
     public ResponseEntity<ApiResponse<ShopResponse>> createShop(@RequestBody ShopRequest request) {
         Shop shop = shopService.createShop(new CreateShopCommand(
                 request.getShopCode(),
+                request.getShopName(),
                 request.getPassword(),
                 request.getAdminPassword()
         ));
@@ -52,6 +54,14 @@ public class ShopController {
         return shopService.getShopById(new GetShopByIdQuery(shopId))
                 .map(shop -> ResponseEntity.ok(ApiResponse.success(ShopResponse.from(shop))))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /* @매장 로그인 */
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> loginShop(@RequestBody ShopRequest request) {
+       
+        String token = shopService.loginShop(new AuthenticationShopCommand(request.getShopCode(), request.getPassword()));
+        return ResponseEntity.ok(ApiResponse.success("로그인이 완료되었습니다.", token));
     }
 }
 

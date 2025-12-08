@@ -34,7 +34,8 @@
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
       "@utils/*": ["src/utils/*"],
-      "@contexts/*": ["src/app/contexts/*"]
+      "@contexts/*": ["src/app/contexts/*"],
+      "@features/*": ["src/features/*"]
     }
   },
   "include": ["src"]

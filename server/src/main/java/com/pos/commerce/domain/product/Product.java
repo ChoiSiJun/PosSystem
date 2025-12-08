@@ -21,21 +21,27 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* 상품 코드 */
     @Column(nullable = false, unique = true)
     private String productCode;
 
+    /* 상품 이름 */
     @Column(nullable = false)
     private String name;
 
+    /* 설명 */
     @Column(length = 1000)
     private String description;
 
+    /* 가격 */
     @Column(nullable = false)
     private BigDecimal price;
 
+    /* 재고 수량 */
     @Column(nullable = false)
     private Integer stockQuantity;
 
+    /* 상품 상태 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductStatus status;

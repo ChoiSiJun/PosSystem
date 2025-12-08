@@ -1,7 +1,8 @@
-import { Box } from '@mui/material';
+import React from 'react';
+import KioskPos from './components/KioskPos';
 
-const Pos = () => {
-  return <Box>TES123333333333333T</Box>;
+const Pos: React.FC = () => {
+  return <KioskPos />;
 };
 
 export default Pos;

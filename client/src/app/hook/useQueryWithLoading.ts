@@ -1,65 +1,58 @@
-import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { useAppDispatch } from 'store/ReduxHooks';
-import { globalLoadingOn, globalLoadingOff } from '@store/slice/LoadingSlice';
-import apiErrorHandler from '@config/handlers/apiErrorHandler';
+import { useQuery, type QueryFunctionContext, type UseQueryResult } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+
+interface UseSimpleQueryOptions<TQueryKey extends readonly unknown[], TData, TSelected = TData> {
+  queryKey: TQueryKey;
+  queryFn: (context: QueryFunctionContext<TQueryKey>) => Promise<TData>;
+  enabled?: boolean;
+  select?: (data: TData) => TSelected;
+  onSuccess?: (data: TSelected) => void;
+  onError?: (error: unknown) => void;
+}
 
 export const useQueryWithLoading = <
   TQueryFnData = unknown,
-  TError = unknown,
-  TData = TQueryFnData,
-  TQueryKey extends readonly unknown[] = unknown[],
+  TQueryKey extends readonly unknown[] = readonly unknown[],
+  TSelected = TQueryFnData,
 >(
-  options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>
-): UseQueryResult<TData, TError> => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const queryResult = useQuery({
-    ...options,
-
-    retry: (failureCount, error) => {
-      if (error instanceof AxiosError && [401, 403].includes(error.response?.status ?? 0)) {
-        return false;
-      }
-
-      return failureCount < 3; // 기본 3회 재시도
-    },
-
-    onError: (error) => {
-      if (error instanceof AxiosError && [403].includes(error.response?.status ?? 0)) {
-        navigate('/error');
-        return false;
-      }
-
-      if (error instanceof AxiosError && [401].includes(error.response?.status ?? 0)) {
-        navigate('/');
-        return false;
-      }
-
-      if (options.onError) {
-        options.onError(error);
-      } else {
-        apiErrorHandler(error);
-      }
-    },
-
-    onSuccess: (data) => {
-      options.onSuccess?.(data);
-    },
-
-    onSettled: (data, error) => {
-      options.onSettled?.(data, error);
-      dispatch(globalLoadingOff());
-    },
-  });
-
-  useEffect(() => {
-    if (queryResult.isLoading) {
-      dispatch(globalLoadingOn());
+  options: UseSimpleQueryOptions<TQueryKey, TQueryFnData, TSelected>
+): UseQueryResult<TSelected, unknown> => {
+  const wrappedQueryFn = async (
+    context: QueryFunctionContext<TQueryKey>
+  ): Promise<TQueryFnData> => {
+    // dispatch(lodingOn());
+    try {
+      return await options.queryFn(context);
+    } finally {
+      // dispatch(lodingOff());
     }
-  }, [queryResult.isLoading, dispatch]);
+  };
+
+  const queryOptions = {
+    queryKey: options.queryKey,
+    queryFn: wrappedQueryFn,
+    enabled: options.enabled,
+    select: options.select,
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+    placeholderData: (previousData: TSelected | undefined) => previousData,
+  };
+
+  const queryResult = useQuery<TQueryFnData, unknown, TSelected, TQueryKey>(queryOptions as any);
+
+  // useEffect에 options를 의존성으로 추가합니다.
+  useEffect(() => {
+    if (queryResult.isSuccess && options.onSuccess && queryResult.data) {
+      options.onSuccess(queryResult.data);
+    }
+  }, [queryResult.isSuccess, queryResult.data, options]); // options 추가
+
+  // useEffect에 options를 의존성으로 추가합니다.
+  useEffect(() => {
+    if (queryResult.isError && options.onError && queryResult.error) {
+      options.onError(queryResult.error);
+    }
+  }, [queryResult.isError, queryResult.error, options]); // options 추가
 
   return queryResult;
 };

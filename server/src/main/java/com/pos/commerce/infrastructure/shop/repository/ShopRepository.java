@@ -10,8 +10,15 @@ import com.pos.commerce.domain.shop.Shop;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
+
+    /* @매장 코드 조회 */
     Optional<Shop> findByShopCode(String shopCode);
+
+    /* @매장 소유자 조회 */
     List<Shop> findByOwnerId(Long ownerId);
+    
+    /* @매장 코드 중복 체크 */
+    boolean existsByShopCode(String shopCode);
 }
 
 

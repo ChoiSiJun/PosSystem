@@ -18,8 +18,20 @@ const loadingSlice = createSlice({
     lodingOff(state) {
       state.isLoading = false;
     },
+    mutationLoadingOn(state) {
+      state.isLoading = true;
+    },
+    mutationLoadingOff(state) {
+      state.isLoading = false;
+    },
+    globalLoadingOn(state) {
+      state.isLoading = true;
+    },
+    globalLoadingOff(state) {
+      state.isLoading = false;
+    },
   },
 });
 
-export const { lodingOn, lodingOff } = loadingSlice.actions;
+export const { lodingOn, lodingOff, mutationLoadingOn, mutationLoadingOff, globalLoadingOn, globalLoadingOff } = loadingSlice.actions;
 export default loadingSlice.reducer;
