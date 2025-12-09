@@ -14,7 +14,7 @@ import com.pos.commerce.application.shop.command.CreateShopCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
 import com.pos.commerce.domain.shop.Shop;
 import com.pos.commerce.infrastructure.shop.repository.ShopRepository;
-import com.pos.commerce.infrastructure.user.Jwt.JwtProvider;
+import com.pos.commerce.util.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 @Service
@@ -40,8 +40,8 @@ public class ShopApplicationService implements ShopService {
         Shop shop = Shop.builder()
                 .shopCode(command.shopCode())
                 .shopName(command.shopName())
-                .password(command.password())
-                .adminPassword(command.adminPassword())
+                .password(passwordEncoder.encode(command.password()))
+                .adminPassword(passwordEncoder.encode(command.adminPassword()))
                 .build();
 
         /* 매장 저장 */
@@ -61,11 +61,6 @@ public class ShopApplicationService implements ShopService {
     @Override
     public String loginShop(AuthenticationShopCommand command) {
 
-        /* 매장 코드 중복 체크 */
-        if (shopRepository.existsByShopCode(command.shopCode())) {
-            throw new IllegalArgumentException("이미 존재하는 매장 이름입니다: " + command.shopCode());
-        }
-
         /* 매장 코드 조회 */
         Shop shop = shopRepository.findByShopCode(command.shopCode())
         .orElseThrow(() -> new IllegalArgumentException("매장을 찾을 수 없습니다: " + command.shopCode()));
@@ -77,6 +72,7 @@ public class ShopApplicationService implements ShopService {
 
         /* 매장 반환 */
         Map<String,String> claim = new HashMap<>();
+        claim.put( "shopCode", shop.getShopCode());
         claim.put("shopName", shop.getShopName());
         return jwtProvider.generateToken(shop.getShopCode(), claim);
     }

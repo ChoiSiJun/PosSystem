@@ -1,4 +1,4 @@
-const shopApiBase = 'api/shop';
+const shopApiBase = '/api/shops';
 
 export const SHOP_API_ENDPOINTS = {
   // 매장 등록
@@ -13,3 +13,4 @@ export const SHOP_API_ENDPOINTS = {
     method: 'POST',
   },
 };
+

@@ -22,3 +22,4 @@ export const useProductDetailQuery = (id: number | null) => {
     enabled: !!id,
   });
 };
+

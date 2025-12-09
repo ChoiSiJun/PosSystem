@@ -1,9 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type {
-  ShopAuthState,
-  ShopLoginResponse,
-  ShopLoginResponsePayload,
-} from '@features/shop/types';
+import type { ShopAuthState, ShopLoginResponsePayload } from '@features/shop/types';
 import { jwtDecode } from 'jwt-decode';
 
 const initialState: ShopAuthState = {
@@ -16,10 +12,10 @@ const shopSlice = createSlice({
   name: 'shop',
   initialState,
   reducers: {
-    shopLogin: (state, action: PayloadAction<ShopLoginResponse>) => {
-      const decodedPayload = jwtDecode<ShopLoginResponsePayload>(action.payload.jwtToken);
+    shopLogin: (state, action: PayloadAction<string>) => {
+      const decodedPayload = jwtDecode<ShopLoginResponsePayload>(action.payload);
 
-      state.jwtToken = action.payload.jwtToken;
+      state.jwtToken = action.payload;
       state.shopCode = decodedPayload.shopCode;
       state.shopName = decodedPayload.shopName;
     },

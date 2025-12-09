@@ -24,6 +24,7 @@ interface ShopRegisterProps {
 
 const validationSchema = yup.object({
   shopCode: yup.string().required('매장 코드를 입력해주세요'),
+  shopName: yup.string().required('매장 이름을 입력해주세요'),
   password: yup
     .string()
     .required('비밀번호를 입력해주세요')
@@ -40,6 +41,7 @@ const ShopRegister: React.FC<ShopRegisterProps> = ({ open, onClose }) => {
   const formik = useFormik({
     initialValues: {
       shopCode: '',
+      shopName: '',
       password: '',
       adminPassword: '',
     },
@@ -87,6 +89,18 @@ const ShopRegister: React.FC<ShopRegisterProps> = ({ open, onClose }) => {
 
             <TextField
               fullWidth
+              id="shopName"
+              name="shopName"
+              label="매장 이름"
+              value={formik.values.shopName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.shopName && Boolean(formik.errors.shopName)}
+              helperText={formik.touched.shopName && formik.errors.shopName}
+            />
+
+            <TextField
+              fullWidth
               id="password"
               name="password"
               label="매장 비밀번호"
@@ -126,3 +140,4 @@ const ShopRegister: React.FC<ShopRegisterProps> = ({ open, onClose }) => {
 };
 
 export default ShopRegister;
+

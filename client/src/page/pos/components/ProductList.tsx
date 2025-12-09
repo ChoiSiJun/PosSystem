@@ -232,3 +232,4 @@ const ProductList: React.FC<ProductListProps> = ({ onAdd, onEdit, onView }) => {
 };
 
 export default ProductList;
+

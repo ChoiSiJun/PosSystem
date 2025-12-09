@@ -7,6 +7,7 @@ import com.pos.commerce.application.shop.command.CreateShopCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
 import com.pos.commerce.domain.shop.Shop;
 
+
 public interface ShopService {
 
     /* @매장 생성 */

@@ -31,17 +31,16 @@ const Main: React.FC = () => {
     onSubmit: async (values) => {
       try {
         const response = await loginMutation.mutateAsync(values);
+        const token = response.data;
 
         // TODO: 토큰 저장 및 상태 관리
-        dispatch(shopLogin(response));
+        dispatch(shopLogin(token));
 
-        toast.success('로그인되었습니다.');
+        toast.success(response.message);
 
         // 로그인 성공 후 POS 페이지로 이동
         navigate('/pos');
-      } catch (error) {
-        toast.error('로그인에 실패했습니다.');
-      }
+      } catch (error) {}
     },
   });
 

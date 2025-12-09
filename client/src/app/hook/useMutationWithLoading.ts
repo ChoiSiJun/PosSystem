@@ -27,12 +27,5 @@ export const useMutationWithLoading = <TData = unknown, TError = unknown, TVaria
     },
 
     // Add the 'mutation' argument to the onSuccess callback.
-    onSuccess: (data, variables, context, mutation) => {
-      options?.onSuccess?.(data, variables, context, mutation);
-    },
-
-    onError: (error, variables, context, mutation) => {
-      options?.onError?.(error, variables, context, mutation);
-    },
   });
 };

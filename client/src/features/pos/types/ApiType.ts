@@ -9,7 +9,8 @@ export interface ProductListRequest {
 
 export interface ProductCreateRequest extends Omit<Product, 'id' | 'createdAt' | 'updatedAt'> {}
 
-export interface ProductUpdateRequest extends Partial<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>> {
+export interface ProductUpdateRequest
+  extends Partial<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>> {
   id: number;
 }
 

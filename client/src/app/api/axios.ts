@@ -9,7 +9,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const state = store.getState();
-    const jwt = state.auth.jwtToken;
+    const jwt = state.shop.jwtToken;
 
     if (jwt) {
       config.headers.Authorization = `Bearer ${jwt}`;

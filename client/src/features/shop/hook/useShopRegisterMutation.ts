@@ -19,13 +19,8 @@ export const useShopRegisterMutation = () => {
       });
 
       const apiResponse = response.data;
-
-      if (!apiResponse.success) {
-        // success가 false라면, 서버에서 정의된 message를 사용하여 에러 발생
-        throw new Error(apiResponse.message || '등록에 실패했습니다.');
-      }
-
       return apiResponse.data;
     },
   });
 };
+

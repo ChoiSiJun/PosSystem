@@ -18,11 +18,6 @@ export interface ShopAuthState extends Pick<Shop, 'shopCode' | 'shopName'> {
 /** 로그인 요청 **/
 export interface ShopLoginRequest extends Pick<Shop, 'shopCode' | 'password'> {}
 
-/** 로그인 응답 **/
-export interface ShopLoginResponse {
-  jwtToken: string;
-}
-
 export interface ShopLoginResponsePayload extends JwtPayload {
   shopCode: string;
   shopName: string;
