@@ -1,11 +1,16 @@
 package com.pos.commerce.config.web;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
+
+    @Value("${file.upload-dir:uploads/images}")
+    private String uploadDir;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -30,5 +35,12 @@ public class CorsConfig implements WebMvcConfigurer {
                 
                 // 캐싱 시간을 설정하여 Preflight 요청을 줄일 수 있습니다 (초 단위).
                 .maxAge(3600);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 업로드된 이미지 파일을 정적 리소스로 서빙
+        registry.addResourceHandler("/uploads/images/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/" + uploadDir + "/");
     }
 }

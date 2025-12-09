@@ -28,8 +28,9 @@ import com.pos.commerce.application.product.query.GetProductByIdQuery;
 import com.pos.commerce.domain.product.Product;
 import com.pos.commerce.domain.product.ProductStatus;
 import com.pos.commerce.presentation.common.dto.ApiResponse;
-import com.pos.commerce.presentation.product.dto.ProductRequest;
+import com.pos.commerce.presentation.product.dto.CreateProductRequest;
 import com.pos.commerce.presentation.product.dto.ProductResponse;
+import com.pos.commerce.presentation.product.dto.UpdateProductRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,14 +43,15 @@ public class ProductController {
 
     /* @상품 생성 */
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@RequestBody ProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(CreateProductRequest request) {
         CreateProductCommand command = new CreateProductCommand(
-                request.getProductCode(),
-                request.getName(),
-                request.getDescription(),
-                request.getPrice(),
-                request.getStockQuantity(),
-                request.getStatus() != null ? request.getStatus() : ProductStatus.ACTIVE
+            request.getCode(),
+            request.getName(),
+            request.getDescription(),
+            request.getPrice(),
+            request.getStock(),
+            request.getStatus(),
+            request.getImage()
         );
 
         Product created = productService.createProduct(command);
@@ -62,17 +64,20 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductRequest request) {
+            @RequestBody UpdateProductRequest request) {
         UpdateProductCommand command = new UpdateProductCommand(
                 id,
                 request.getName(),
                 request.getDescription(),
                 request.getPrice(),
-                request.getStockQuantity(),
+                request.getStock(),
+                request.getImage(),
+                request.getImageUrl(),
                 request.getStatus()
         );
 
         Product updated = productService.updateProduct(command);
+        
         return ResponseEntity.ok(ApiResponse.success("상품이 수정되었습니다.", ProductResponse.from(updated)));
     }
 

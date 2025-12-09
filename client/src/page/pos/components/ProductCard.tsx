@@ -28,19 +28,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     >
       <CardMedia
         component="img"
-        height="200"
         image={product.imageUrl || '/placeholder-image.png'}
         alt={product.name}
         sx={{
+          height: { xs: 150, sm: 180, md: 200 },
           objectFit: 'cover',
           backgroundColor: '#f5f5f5',
         }}
       />
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h6" component="h3" sx={{ mb: 1, fontWeight: 'bold' }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: { xs: 1.5, sm: 2 } }}>
+        <Typography 
+          variant="h6" 
+          component="h3" 
+          sx={{ 
+            mb: 1, 
+            fontWeight: 'bold',
+            fontSize: { xs: '1rem', sm: '1.25rem' },
+            lineHeight: 1.3,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
           {product.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, flexGrow: 1 }}>
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ 
+            mb: 1, 
+            flexGrow: 1,
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
           {product.description}
         </Typography>
         <Box
@@ -49,9 +76,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             mt: 'auto',
+            gap: 1,
           }}
         >
-          <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+          <Typography 
+            variant="h6" 
+            color="primary" 
+            sx={{ 
+              fontWeight: 'bold',
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+            }}
+          >
             {product.price.toLocaleString()}원
           </Typography>
           {isOutOfStock && <Chip label="품절" color="error" size="small" />}

@@ -23,7 +23,7 @@ public class Product {
 
     /* 상품 코드 */
     @Column(nullable = false, unique = true)
-    private String productCode;
+    private String code;
 
     /* 상품 이름 */
     @Column(nullable = false)
@@ -40,6 +40,10 @@ public class Product {
     /* 재고 수량 */
     @Column(nullable = false)
     private Integer stockQuantity;
+
+    /* 상품 이미지 */
+    @Column(nullable = false)
+    private String image_url;
 
     /* 상품 상태 */
     @Enumerated(EnumType.STRING)

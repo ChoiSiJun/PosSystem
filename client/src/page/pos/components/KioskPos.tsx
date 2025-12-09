@@ -1,16 +1,30 @@
 import React, { useState, useCallback } from 'react';
-import { Box, TextField, InputAdornment, Typography, Paper } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import {
+  Box,
+  TextField,
+  InputAdornment,
+  Typography,
+  Paper,
+  Button,
+  Dialog,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { Search as SearchIcon, Add as AddIcon } from '@mui/icons-material';
 import { useProductListQuery } from '@/features/pos/hook/useProductListQuery';
 import type { Product, CartItem } from '@/features/pos/types';
 import ProductCard from './ProductCard';
 import Cart from './Cart';
 import Calculator from './Calculator';
+import ProductForm from './ProductForm';
 import { toast } from 'react-toastify';
 
 const KioskPos: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [search, setSearch] = useState('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isProductFormOpen, setIsProductFormOpen] = useState(false);
 
   const { data, isLoading } = useProductListQuery({
     page: 1,
@@ -83,16 +97,48 @@ const KioskPos: React.FC = () => {
   const filteredProducts =
     data?.products?.filter((product) => product.status === 'ACTIVE' && product.stock > 0) || [];
 
+  const handleProductFormSuccess = useCallback(() => {
+    setIsProductFormOpen(false);
+  }, []);
+
+  const handleProductFormCancel = useCallback(() => {
+    setIsProductFormOpen(false);
+  }, []);
+
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>
-        POS 시스템
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          POS 시스템
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setIsProductFormOpen(true)}
+          sx={{ flexShrink: 0 }}
+        >
+          상품 등록
+        </Button>
+      </Box>
 
-      <Box sx={{ display: 'flex', gap: 2, flexGrow: 1, overflow: 'hidden' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          flexGrow: 1,
+          overflow: 'hidden',
+          flexDirection: { xs: 'column', md: 'row' },
+        }}
+      >
         {/* 왼쪽: 상품 목록 */}
         <Box
-          sx={{ flex: '0 0 66.666%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+          sx={{
+            flex: { xs: '1 1 auto', md: '0 0 66.666%' },
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            minHeight: 0,
+          }}
         >
           <Paper sx={{ p: 2, mb: 2 }}>
             <TextField
@@ -123,7 +169,11 @@ const KioskPos: React.FC = () => {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gridTemplateColumns: {
+                    xs: 'repeat(2, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                    md: 'repeat(4, 1fr)',
+                  },
                   gap: 2,
                 }}
               >
@@ -142,11 +192,12 @@ const KioskPos: React.FC = () => {
         {/* 오른쪽: 결제 영역 */}
         <Box
           sx={{
-            flex: '0 0 33.333%',
+            flex: { xs: '1 1 auto', md: '0 0 33.333%' },
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
             overflow: 'hidden',
+            minHeight: 0,
           }}
         >
           {/* 장바구니 */}
@@ -165,6 +216,19 @@ const KioskPos: React.FC = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* 상품 등록 다이얼로그 */}
+      <Dialog
+        open={isProductFormOpen}
+        onClose={handleProductFormCancel}
+        maxWidth="md"
+        fullWidth
+        fullScreen={isMobile}
+      >
+        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+          <ProductForm onSuccess={handleProductFormSuccess} onCancel={handleProductFormCancel} />
+        </Box>
+      </Dialog>
     </Box>
   );
 };
