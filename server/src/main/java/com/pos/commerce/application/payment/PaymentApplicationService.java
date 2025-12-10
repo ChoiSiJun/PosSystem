@@ -12,6 +12,7 @@ import com.pos.commerce.application.payment.command.CreatePaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand.PaymentItemCommand;
 import com.pos.commerce.application.payment.query.GetPaymentByIdQuery;
 import com.pos.commerce.application.payment.query.GetPaymentByNumberQuery;
+import com.pos.commerce.application.payment.query.GetPaymentsByDateRangeQuery;
 import com.pos.commerce.domain.payment.Payment;
 import com.pos.commerce.domain.payment.PaymentItem;
 import com.pos.commerce.domain.payment.PaymentStatus;
@@ -57,6 +58,13 @@ public class PaymentApplicationService implements PaymentService {
     @Transactional(readOnly = true)
     public Optional<Payment> getPaymentByNumber(GetPaymentByNumberQuery query) {
         return paymentRepository.findByPaymentNumber(query.paymentNumber());
+    }
+
+    /* @날짜 범위로 결제 내역 조회 */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Payment> getPaymentsByDateRange(GetPaymentsByDateRangeQuery query) {
+        return paymentRepository.findByCreatedAtBetween(query.startDate(), query.endDate());
     }
 
     /* @결제 취소 */

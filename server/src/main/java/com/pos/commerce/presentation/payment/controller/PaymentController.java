@@ -5,19 +5,23 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 import com.pos.commerce.application.payment.PaymentService;
 import com.pos.commerce.application.payment.command.CancelPaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand.PaymentItemCommand;
 import com.pos.commerce.application.payment.query.GetPaymentByIdQuery;
+import com.pos.commerce.application.payment.query.GetPaymentsByDateRangeQuery;
 import com.pos.commerce.domain.payment.Payment;
 import com.pos.commerce.presentation.common.dto.ApiResponse;
 import com.pos.commerce.presentation.payment.dto.PaymentItemRequest;
@@ -63,6 +67,23 @@ public class PaymentController {
         return paymentService.getPaymentById(new GetPaymentByIdQuery(id))
                 .map(payment -> ResponseEntity.ok(ApiResponse.success(PaymentResponse.from(payment))))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /* @날짜 범위로 결제 내역 조회 */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPaymentsByDateRange(
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startDate,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endDate) {
+             
+        List<Payment> payments = paymentService.getPaymentsByDateRange(
+                new GetPaymentsByDateRangeQuery(startDate, endDate.plusDays(1).withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)));
+        List<PaymentResponse> responses = payments.stream()
+                .map(PaymentResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
     /* @결제 취소 */

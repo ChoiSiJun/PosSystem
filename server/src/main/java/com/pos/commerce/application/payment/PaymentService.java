@@ -7,12 +7,14 @@ import com.pos.commerce.application.payment.command.CancelPaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand;
 import com.pos.commerce.application.payment.query.GetPaymentByIdQuery;
 import com.pos.commerce.application.payment.query.GetPaymentByNumberQuery;
+import com.pos.commerce.application.payment.query.GetPaymentsByDateRangeQuery;
 import com.pos.commerce.domain.payment.Payment;
 
 public interface PaymentService {
     Payment createPayment(CreatePaymentCommand command);
     Optional<Payment> getPaymentById(GetPaymentByIdQuery query);
     Optional<Payment> getPaymentByNumber(GetPaymentByNumberQuery query);
+    List<Payment> getPaymentsByDateRange(GetPaymentsByDateRangeQuery query);
     Payment cancelPayment(CancelPaymentCommand command);
 }
 
