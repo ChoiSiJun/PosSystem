@@ -15,12 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pos.commerce.application.payment.PaymentService;
 import com.pos.commerce.application.payment.command.CancelPaymentCommand;
-import com.pos.commerce.application.payment.command.CompletePaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand;
-import com.pos.commerce.application.payment.command.ProcessPaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand.PaymentItemCommand;
 import com.pos.commerce.application.payment.query.GetPaymentByIdQuery;
-import com.pos.commerce.application.payment.query.GetPaymentsByUserIdQuery;
 import com.pos.commerce.domain.payment.Payment;
 import com.pos.commerce.presentation.common.dto.ApiResponse;
 import com.pos.commerce.presentation.payment.dto.PaymentItemRequest;
@@ -39,6 +36,7 @@ public class PaymentController {
     /* @결제 생성 */
     @PostMapping
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody PaymentRequest request) {
+        /* @결제 아이템 */
         List<PaymentItemCommand> items = request.getItems() != null
                 ? request.getItems().stream()
                 .map(this::toItemCommand)
@@ -46,9 +44,11 @@ public class PaymentController {
                 : List.of();
 
         CreatePaymentCommand command = new CreatePaymentCommand(
+                /* @결제 총 금액 */
                 request.getTotalAmount(),
+                /* @결제 방법 */
                 request.getMethod(),
-                request.getUserId(),
+                /* @결제 아이템 */
                 items
         );
 
@@ -65,34 +65,11 @@ public class PaymentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /* @사용자별 결제 조회 */
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPaymentsByUser(@PathVariable String userId) {
-        List<PaymentResponse> payments = paymentService.getPaymentsByUserId(new GetPaymentsByUserIdQuery(userId)).stream()
-                .map(PaymentResponse::from)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(ApiResponse.success(payments));
-    }
-
-    /* @결제 처리 */
-    @PostMapping("/{id}/process")
-    public ResponseEntity<ApiResponse<PaymentResponse>> processPayment(@PathVariable Long id) {
-        Payment processed = paymentService.processPayment(new ProcessPaymentCommand(id));
-        return ResponseEntity.ok(ApiResponse.success("결제가 처리되었습니다.", PaymentResponse.from(processed)));
-    }
-
     /* @결제 취소 */
     @PostMapping("/{id}/cancel")
     public ResponseEntity<ApiResponse<PaymentResponse>> cancelPayment(@PathVariable Long id) {
         Payment cancelled = paymentService.cancelPayment(new CancelPaymentCommand(id));
         return ResponseEntity.ok(ApiResponse.success("결제가 취소되었습니다.", PaymentResponse.from(cancelled)));
-    }
-
-    /* @결제 완료 */
-    @PostMapping("/{id}/complete")
-    public ResponseEntity<ApiResponse<PaymentResponse>> completePayment(@PathVariable Long id) {
-        Payment completed = paymentService.completePayment(new CompletePaymentCommand(id));
-        return ResponseEntity.ok(ApiResponse.success("결제가 완료되었습니다.", PaymentResponse.from(completed)));
     }
 
     /* @결제 아이템 변환 */

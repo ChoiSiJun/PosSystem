@@ -24,7 +24,6 @@ public class PaymentResponse {
     private BigDecimal totalAmount;
     private PaymentStatus status;
     private PaymentMethod method;
-    private String userId;
     private List<PaymentItemResponse> items;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -36,7 +35,6 @@ public class PaymentResponse {
                 .totalAmount(payment.getTotalAmount())
                 .status(payment.getStatus())
                 .method(payment.getMethod())
-                .userId(payment.getUserId())
                 .items(payment.getItems().stream()
                         .map(PaymentItemResponse::from)
                         .collect(Collectors.toList()))

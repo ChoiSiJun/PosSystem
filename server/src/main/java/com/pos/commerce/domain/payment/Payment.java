@@ -19,27 +19,30 @@ import java.util.List;
 @AllArgsConstructor
 public class Payment {
 
+    /* @결제 아이디 */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* @결제 번호 */
     @Column(nullable = false, unique = true)
     private String paymentNumber;
 
+    /* @결제 총 금액 */
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
+    /* @결제 상태 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
 
+    /* @결제 방법 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod method;
 
-    @Column(nullable = false)
-    private String userId;
-
+    /* @결제 아이템 */
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<PaymentItem> items = new ArrayList<>();

@@ -8,13 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pos.commerce.application.payment.command.CancelPaymentCommand;
-import com.pos.commerce.application.payment.command.CompletePaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand;
-import com.pos.commerce.application.payment.command.ProcessPaymentCommand;
 import com.pos.commerce.application.payment.command.CreatePaymentCommand.PaymentItemCommand;
 import com.pos.commerce.application.payment.query.GetPaymentByIdQuery;
 import com.pos.commerce.application.payment.query.GetPaymentByNumberQuery;
-import com.pos.commerce.application.payment.query.GetPaymentsByUserIdQuery;
 import com.pos.commerce.domain.payment.Payment;
 import com.pos.commerce.domain.payment.PaymentItem;
 import com.pos.commerce.domain.payment.PaymentStatus;
@@ -29,6 +26,7 @@ public class PaymentApplicationService implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    /* @결제 생성 */
     @Override
     public Payment createPayment(CreatePaymentCommand command) {
         Payment payment = Payment.builder()
@@ -36,44 +34,32 @@ public class PaymentApplicationService implements PaymentService {
                 .totalAmount(command.totalAmount())
                 .status(PaymentStatus.PENDING)
                 .method(command.method())
-                .userId(command.userId())
                 .build();
 
         if (command.items() != null) {
             command.items().forEach(itemCommand -> payment.addItem(toPaymentItem(itemCommand)));
         }
 
+        payment.complete();
+
         return paymentRepository.save(payment);
     }
 
+    /* @결제 조회 */
     @Override
     @Transactional(readOnly = true)
     public Optional<Payment> getPaymentById(GetPaymentByIdQuery query) {
         return paymentRepository.findById(query.paymentId());
     }
 
+    /* @결제 번호 조회 */
     @Override
     @Transactional(readOnly = true)
     public Optional<Payment> getPaymentByNumber(GetPaymentByNumberQuery query) {
         return paymentRepository.findByPaymentNumber(query.paymentNumber());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Payment> getPaymentsByUserId(GetPaymentsByUserIdQuery query) {
-        return paymentRepository.findByUserId(query.userId());
-    }
-
-    @Override
-    public Payment processPayment(ProcessPaymentCommand command) {
-        Payment payment = findPayment(command.paymentId());
-        if (payment.getStatus() != PaymentStatus.PENDING) {
-            throw new IllegalStateException("처리할 수 없는 결제 상태입니다: " + payment.getStatus());
-        }
-        payment.complete();
-        return paymentRepository.save(payment);
-    }
-
+    /* @결제 취소 */
     @Override
     public Payment cancelPayment(CancelPaymentCommand command) {
         Payment payment = findPayment(command.paymentId());
@@ -81,18 +67,13 @@ public class PaymentApplicationService implements PaymentService {
         return paymentRepository.save(payment);
     }
 
-    @Override
-    public Payment completePayment(CompletePaymentCommand command) {
-        Payment payment = findPayment(command.paymentId());
-        payment.complete();
-        return paymentRepository.save(payment);
-    }
-
+    /* @결제 찾기 */
     private Payment findPayment(Long paymentId) {
         return paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentId));
     }
 
+    /* @결제 아이템 변환 */
     private PaymentItem toPaymentItem(PaymentItemCommand itemCommand) {
         return PaymentItem.builder()
                 .productId(itemCommand.productId())
@@ -103,6 +84,7 @@ public class PaymentApplicationService implements PaymentService {
                 .build();
     }
 
+    /* @결제 번호 생성 */
     private String generatePaymentNumber() {
         return "PAY-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
