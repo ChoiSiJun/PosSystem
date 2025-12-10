@@ -26,7 +26,6 @@ import com.pos.commerce.application.product.query.GetAllProductsQuery;
 import com.pos.commerce.application.product.query.GetProductByCodeQuery;
 import com.pos.commerce.application.product.query.GetProductByIdQuery;
 import com.pos.commerce.domain.product.Product;
-import com.pos.commerce.domain.product.ProductStatus;
 import com.pos.commerce.presentation.common.dto.ApiResponse;
 import com.pos.commerce.presentation.product.dto.CreateProductRequest;
 import com.pos.commerce.presentation.product.dto.ProductResponse;
@@ -43,7 +42,8 @@ public class ProductController {
 
     /* @상품 생성 */
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(CreateProductRequest request) {
+    public ResponseEntity<ApiResponse<Void>> createProduct(CreateProductRequest request) {
+  
         CreateProductCommand command = new CreateProductCommand(
             request.getCode(),
             request.getName(),
@@ -53,15 +53,13 @@ public class ProductController {
             request.getStatus(),
             request.getImage()
         );
-
-        Product created = productService.createProduct(command);
+        productService.createProduct(command);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("상품이 생성되었습니다.", ProductResponse.from(created)));
+                .body(ApiResponse.success("상품이 생성되었습니다.",null));
     }
 
     /* @상품 수정 */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
             @PathVariable Long id,
             @RequestBody UpdateProductRequest request) {
@@ -76,9 +74,8 @@ public class ProductController {
                 request.getStatus()
         );
 
-        Product updated = productService.updateProduct(command);
-        
-        return ResponseEntity.ok(ApiResponse.success("상품이 수정되었습니다.", ProductResponse.from(updated)));
+        productService.updateProduct(command);
+        return ResponseEntity.ok(ApiResponse.success("상품이 수정되었습니다.", null));
     }
 
 

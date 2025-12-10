@@ -11,7 +11,7 @@ public record UpdateProductCommand(
         String name,
         String description,
         BigDecimal price,
-        Integer stockQuantity,
+        Integer stock,
         MultipartFile image,
         String imageUrl,
         ProductStatus status

@@ -17,11 +17,12 @@ import com.pos.commerce.domain.product.ProductStatus;
 @AllArgsConstructor
 public class ProductResponse {
     private Long id;
-    private String productCode;
+    private String code;
     private String name;
     private String description;
     private BigDecimal price;
-    private Integer stockQuantity;
+    private Integer stock;
+    private String imageUrl;
     private ProductStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -29,18 +30,15 @@ public class ProductResponse {
     public static ProductResponse from(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
-                .productCode(product.getProductCode())
+                .code(product.getCode())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
-                .stockQuantity(product.getStockQuantity())
+                .stock(product.getStock())
                 .status(product.getStatus())
+                .imageUrl(product.getImage_url())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
     }
 }
-
-
-
-

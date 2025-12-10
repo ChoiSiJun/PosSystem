@@ -1,9 +1,23 @@
 server:
   port: 8080
+  tomcat:
+    max-threads: 100
+    max-connections: 1000
+    min-spare-threads: 10
+    max-http-post-size: 10MB
+    max-http-put-size: 10MB
+    max-http-delete-size: 10MB
+    max-http-head-size: 10MB
+    max-http-options-size: 10MB
 
 spring:
   application:
     name: commerce
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
 
   datasource:
     url: jdbc:postgresql://34.64.50.124:5432/forjun
@@ -32,7 +46,3 @@ logging:
     org.springframework.transaction: DEBUG
     org.springframework.web.servlet: DEBUG
     org.springframework.web.filter: DEBUG
-
-
-file:
-  upload-dir: uploads/images

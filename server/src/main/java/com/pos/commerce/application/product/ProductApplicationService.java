@@ -40,15 +40,15 @@ public class ProductApplicationService implements ProductService {
 
 
         /* 상품 이미지 저장 */
-        String imageUrl = storageService.saveFile(command.image());
-
+        String imageUrl = command.image() != null ? storageService.saveFile(command.image()) : null;
+     
         /* 상품 저장 */
         Product product = Product.builder()
                 .code(command.code())
                 .name(command.name())
                 .description(command.description())
                 .price(command.price())
-                .stockQuantity(command.stock())
+                .stock(command.stock())
                 .image_url(imageUrl)
                 .status(status)
                 .build();
@@ -65,7 +65,7 @@ public class ProductApplicationService implements ProductService {
 
         /* 상품 이미지 저장 */
         String imageUrl = command.image() != null ? storageService.saveFile(command.image()) : existingProduct.getImage_url();
-
+    
         /* 상품 업데이트 */
         Product updatedProduct = Product.builder()
                 .id(existingProduct.getId())
@@ -73,7 +73,7 @@ public class ProductApplicationService implements ProductService {
                 .name(command.name())
                 .description(command.description())
                 .price(command.price())
-                .stockQuantity(command.stockQuantity())
+                .stock(command.stock())
                 .image_url(imageUrl)
                 .status(status)
                 .createdAt(existingProduct.getCreatedAt())

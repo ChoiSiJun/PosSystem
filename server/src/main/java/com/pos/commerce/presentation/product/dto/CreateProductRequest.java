@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.springframework.web.multipart.MultipartFile; // ❗추가
 
 import java.math.BigDecimal;
 import com.pos.commerce.domain.product.ProductStatus;
 
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateProductRequest {

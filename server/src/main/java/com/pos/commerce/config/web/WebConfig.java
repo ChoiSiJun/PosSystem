@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.upload-dir:uploads/images}")
     private String uploadDir;
@@ -41,6 +41,6 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 업로드된 이미지 파일을 정적 리소스로 서빙
         registry.addResourceHandler("/uploads/images/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/" + uploadDir + "/");
-    }
+                .addResourceLocations("file:" + uploadDir + "/");
+    }   
 }

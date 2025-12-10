@@ -39,7 +39,7 @@ public class Product {
 
     /* 재고 수량 */
     @Column(nullable = false)
-    private Integer stockQuantity;
+    private Integer stock;
 
     /* 상품 이미지 */
     @Column(nullable = false)
@@ -66,19 +66,19 @@ public class Product {
         updatedAt = LocalDateTime.now();
     }
 
-    public void updateStock(Integer quantity) {
-        this.stockQuantity = quantity;
+    public void updateStock(Integer stock) {
+        this.stock = stock;
     }
 
-    public void decreaseStock(Integer quantity) {
-        if (this.stockQuantity < quantity) {
+    public void decreaseStock(Integer stock) {
+        if (this.stock < stock) {
             throw new IllegalStateException("재고가 부족합니다.");
         }
-        this.stockQuantity -= quantity;
+        this.stock -= stock;
     }
 
-    public void increaseStock(Integer quantity) {
-        this.stockQuantity += quantity;
+    public void increaseStock(Integer stock) {
+        this.stock += stock;
     }
 
     public void activate() {
