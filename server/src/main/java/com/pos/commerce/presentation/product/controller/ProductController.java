@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,8 +60,15 @@ public class ProductController {
     /* @상품 수정 */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
-            @PathVariable Long id,
-            @RequestBody UpdateProductRequest request) {
+            @PathVariable Long id,UpdateProductRequest request) {
+
+                System.out.println("request: " + request.getName());
+                System.out.println("request: " + request.getDescription());
+                System.out.println("request: " + request.getPrice());
+                System.out.println("request: " + request.getStock());
+                System.out.println("request: " + request.getImage());
+                System.out.println("request: " + request.getImageUrl());
+                System.out.println("request: " + request.getStatus());
         UpdateProductCommand command = new UpdateProductCommand(
                 id,
                 request.getName(),

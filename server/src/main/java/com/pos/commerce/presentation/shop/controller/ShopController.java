@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pos.commerce.application.shop.ShopService;
 import com.pos.commerce.application.shop.command.AuthenticationShopCommand;
 import com.pos.commerce.application.shop.command.CreateShopCommand;
+import com.pos.commerce.application.shop.command.VerifyAdminPasswordCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
 
 import com.pos.commerce.domain.shop.Shop;
@@ -22,6 +23,8 @@ import com.pos.commerce.presentation.common.dto.ApiResponse;
 
 import com.pos.commerce.presentation.shop.dto.ShopRequest;
 import com.pos.commerce.presentation.shop.dto.ShopResponse;
+import com.pos.commerce.presentation.shop.dto.VerifyAdminPasswordRequest;
+import com.pos.commerce.presentation.shop.dto.VerifyAdminPasswordResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +63,22 @@ public class ShopController {
        
         String token = shopService.loginShop(new AuthenticationShopCommand(request.getShopCode(), request.getPassword()));
         return ResponseEntity.ok(ApiResponse.success("로그인이 완료되었습니다.", token));
+    }
+
+    /* @관리자 비밀번호 검증 */
+    @PostMapping("/{shopCode}/admin/verify")
+    public ResponseEntity<ApiResponse<VerifyAdminPasswordResponse>> verifyAdminPassword(
+            @PathVariable String shopCode,
+            @RequestBody VerifyAdminPasswordRequest request) {
+        
+        boolean verified = shopService.verifyAdminPassword(
+                new VerifyAdminPasswordCommand(shopCode, request.getPassword()));
+        
+        VerifyAdminPasswordResponse response = VerifyAdminPasswordResponse.builder()
+                .verified(verified)
+                .build();
+        
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
 

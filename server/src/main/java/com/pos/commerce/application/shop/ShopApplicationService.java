@@ -1,7 +1,6 @@
 package com.pos.commerce.application.shop;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pos.commerce.application.shop.command.AuthenticationShopCommand;
 import com.pos.commerce.application.shop.command.CreateShopCommand;
+import com.pos.commerce.application.shop.command.VerifyAdminPasswordCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
 import com.pos.commerce.domain.shop.Shop;
 import com.pos.commerce.infrastructure.shop.repository.ShopRepository;
@@ -75,6 +75,17 @@ public class ShopApplicationService implements ShopService {
         claim.put( "shopCode", shop.getShopCode());
         claim.put("shopName", shop.getShopName());
         return jwtProvider.generateToken(shop.getShopCode(), claim);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean verifyAdminPassword(VerifyAdminPasswordCommand command) {
+        /* 매장 코드 조회 */
+        Shop shop = shopRepository.findByShopCode(command.shopCode())
+                .orElseThrow(() -> new IllegalArgumentException("매장을 찾을 수 없습니다: " + command.shopCode()));
+
+        /* 관리자 비밀번호 검증 */
+        return passwordEncoder.matches(command.password(), shop.getAdminPassword());
     }
 }
 
