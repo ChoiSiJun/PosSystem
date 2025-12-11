@@ -16,13 +16,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Inventory {
 
+    /* @재고 아이디 */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* @상품 아이디 */
     @Column(nullable = false, unique = true)
     private Long productId;
 
+    /* @재고 수량 */
     @Column(nullable = false)
     private Integer quantity;
 

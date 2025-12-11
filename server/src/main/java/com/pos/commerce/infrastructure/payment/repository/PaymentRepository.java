@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.pos.commerce.domain.payment.Payment;
+import com.pos.commerce.domain.payment.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByPaymentNumber(String paymentNumber);
     
     /* @날짜 범위로 결제 내역 조회 */
-    List<Payment> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+    List<Payment> findByShopCodeAndStatusAndCreatedAtBetween(String shopCode, PaymentStatus status, LocalDateTime startDate, LocalDateTime endDate);
 }
 
 

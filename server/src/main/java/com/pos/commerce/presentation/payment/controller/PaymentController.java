@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,10 +81,13 @@ public class PaymentController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPaymentsByDateRange(
         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startDate,
-        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endDate) {
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endDate,
+        @AuthenticationPrincipal UserDetails userDetails) {
              
         List<Payment> payments = paymentService.getPaymentsByDateRange(
-                new GetPaymentsByDateRangeQuery(startDate, endDate.plusDays(1).withHour(0)
+                new GetPaymentsByDateRangeQuery(
+                userDetails.getUsername(),      
+                startDate, endDate.plusDays(1).withHour(0)
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0)));
@@ -93,7 +98,7 @@ public class PaymentController {
     }
 
     /* @결제 취소 */
-    @PostMapping("/{id}/cancel")
+    @PutMapping("/{id}/cancel")
     public ResponseEntity<ApiResponse<PaymentResponse>> cancelPayment(@PathVariable Long id) {
         Payment cancelled = paymentService.cancelPayment(new CancelPaymentCommand(id));
         return ResponseEntity.ok(ApiResponse.success("결제가 취소되었습니다.", PaymentResponse.from(cancelled)));
