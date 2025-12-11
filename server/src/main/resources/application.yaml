@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 80
   tomcat:
     max-threads: 100
     max-connections: 1000
@@ -48,6 +48,7 @@ logging:
     org.springframework.data.jpa: DEBUG
     org.springframework.transaction: DEBUG
     org.springframework.web.servlet: DEBUG
-    org.springframework.web.filter: DEBUG
+
+    # 💡 SQL 로그는 별도의 로거 이름으로 분리합니다.
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL 파라미터 바인딩 확인 (TRACE 레벨)
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

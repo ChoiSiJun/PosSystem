@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/uploads/**").permitAll()
+                    .requestMatchers("/api/uploads/images/**").permitAll()
                     .requestMatchers("/", "/index.html", "/favicon.ico","/api/shops/**").permitAll()
                     .anyRequest().authenticated()
                 )

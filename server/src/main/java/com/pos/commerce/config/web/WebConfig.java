@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 업로드된 이미지 파일을 정적 리소스로 서빙
-        registry.addResourceHandler("/uploads/images/**")
+        registry.addResourceHandler("/api/uploads/images/**")
                 .addResourceLocations("file:" + uploadDir + "/");
     }   
 
