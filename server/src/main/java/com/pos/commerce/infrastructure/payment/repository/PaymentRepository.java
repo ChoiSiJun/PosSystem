@@ -16,6 +16,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     
     /* @날짜 범위로 결제 내역 조회 */
     List<Payment> findByShopCodeAndStatusAndCreatedAtBetween(String shopCode, PaymentStatus status, LocalDateTime startDate, LocalDateTime endDate);
+    
+    /* @매장 코드와 상태로 결제 조회 */
+    List<Payment> findByShopCodeAndStatus(String shopCode, PaymentStatus status);
 }
 
 
