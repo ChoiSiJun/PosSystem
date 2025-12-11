@@ -44,6 +44,7 @@ public class ProductApplicationService implements ProductService {
      
         /* 상품 저장 */
         Product product = Product.builder()
+                .shopCode(command.shopCode())
                 .code(command.code())
                 .name(command.name())
                 .description(command.description())
@@ -69,6 +70,7 @@ public class ProductApplicationService implements ProductService {
         /* 상품 업데이트 */
         Product updatedProduct = Product.builder()
                 .id(existingProduct.getId())
+                .shopCode(existingProduct.getShopCode())
                 .code(existingProduct.getCode())
                 .name(command.name())
                 .description(command.description())
@@ -106,7 +108,7 @@ public class ProductApplicationService implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<Product> getAllProducts(GetAllProductsQuery query) {
-        return productRepository.findAll();
+        return productRepository.findByShopCode(query.shopCode());
     }
 
     @Override

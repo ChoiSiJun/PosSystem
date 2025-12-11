@@ -16,9 +16,7 @@ import com.pos.commerce.domain.product.ProductStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProductRequest {
-
-    /* 상품 코드 */
-    private String code;            
+         
     /* 상품 이름 */
     private String name;
     /* 상품 설명 */

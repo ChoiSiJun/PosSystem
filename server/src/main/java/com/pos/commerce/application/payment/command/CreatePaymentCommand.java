@@ -6,6 +6,10 @@ import java.util.List;
 import com.pos.commerce.domain.payment.PaymentMethod;
 
 public record CreatePaymentCommand(
+
+        /* @매장 코드 */
+        String shopCode,
+
         /* @결제 총 금액 */
         BigDecimal totalAmount,
         /* @결제 방법 */
@@ -16,6 +20,7 @@ public record CreatePaymentCommand(
 
     /* @결제 아이템 */
     public record PaymentItemCommand(
+
             /* @결제 아이템 상품 아이디 */
             Long productId,
             /* @결제 아이템 상품 이름 */

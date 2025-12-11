@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +41,9 @@ public class PaymentController {
 
     /* @결제 생성 */
     @PostMapping
-    public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody PaymentRequest request) {
+    public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(
+            @RequestBody PaymentRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         /* @결제 아이템 */
         List<PaymentItemCommand> items = request.getItems() != null
                 ? request.getItems().stream()
@@ -48,6 +52,8 @@ public class PaymentController {
                 : List.of();
 
         CreatePaymentCommand command = new CreatePaymentCommand(
+                /* @매장 코드 */
+                userDetails.getUsername(),
                 /* @결제 총 금액 */
                 request.getTotalAmount(),
                 /* @결제 방법 */

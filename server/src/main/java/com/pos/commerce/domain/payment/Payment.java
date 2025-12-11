@@ -24,6 +24,10 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* @매장 코드 */
+    @Column(nullable = false)
+    private String shopCode;
+
     /* @결제 번호 */
     @Column(nullable = false, unique = true)
     private String paymentNumber;

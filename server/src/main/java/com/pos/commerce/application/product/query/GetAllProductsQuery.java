@@ -1,6 +1,6 @@
 package com.pos.commerce.application.product.query;
 
-public record GetAllProductsQuery() {
+public record GetAllProductsQuery(String shopCode) {
 }
 
 

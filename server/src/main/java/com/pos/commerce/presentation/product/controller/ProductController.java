@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pos.commerce.application.product.ProductService;
@@ -41,9 +44,10 @@ public class ProductController {
 
     /* @상품 생성 */
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createProduct(CreateProductRequest request) {
+    public ResponseEntity<ApiResponse<Void>> createProduct(CreateProductRequest request , @AuthenticationPrincipal UserDetails userDetails) {
   
         CreateProductCommand command = new CreateProductCommand(
+            userDetails.getUsername(),
             request.getCode(),
             request.getName(),
             request.getDescription(),
@@ -60,17 +64,11 @@ public class ProductController {
     /* @상품 수정 */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
-            @PathVariable Long id,UpdateProductRequest request) {
+            @PathVariable Long id,UpdateProductRequest request , @AuthenticationPrincipal UserDetails userDetails) {
 
-                System.out.println("request: " + request.getName());
-                System.out.println("request: " + request.getDescription());
-                System.out.println("request: " + request.getPrice());
-                System.out.println("request: " + request.getStock());
-                System.out.println("request: " + request.getImage());
-                System.out.println("request: " + request.getImageUrl());
-                System.out.println("request: " + request.getStatus());
         UpdateProductCommand command = new UpdateProductCommand(
                 id,
+                userDetails.getUsername(),
                 request.getName(),
                 request.getDescription(),
                 request.getPrice(),
@@ -109,8 +107,8 @@ public class ProductController {
 
     /* @모든 상품 조회 */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllProducts(new GetAllProductsQuery()).stream()
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts(@AuthenticationPrincipal UserDetails userDetails) {
+        List<ProductResponse> products = productService.getAllProducts(new GetAllProductsQuery(userDetails.getUsername())).stream()
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(products));

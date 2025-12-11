@@ -31,6 +31,7 @@ public class PaymentApplicationService implements PaymentService {
     @Override
     public Payment createPayment(CreatePaymentCommand command) {
         Payment payment = Payment.builder()
+                .shopCode(command.shopCode())
                 .paymentNumber(generatePaymentNumber())
                 .totalAmount(command.totalAmount())
                 .status(PaymentStatus.PENDING)

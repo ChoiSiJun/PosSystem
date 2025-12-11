@@ -21,6 +21,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /* 매장 코드 */
+    @Column(nullable = false)
+    private String shopCode;
+
     /* 상품 코드 */
     @Column(nullable = false, unique = true)
     private String code;
@@ -42,7 +46,7 @@ public class Product {
     private Integer stock;
 
     /* 상품 이미지 */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String image_url;
 
     /* 상품 상태 */

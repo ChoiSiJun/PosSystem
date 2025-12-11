@@ -8,6 +8,7 @@ import com.pos.commerce.domain.product.ProductStatus;
 
 public record UpdateProductCommand(
         Long productId,
+        String shopCode,
         String name,
         String description,
         BigDecimal price,

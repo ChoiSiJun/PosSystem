@@ -15,6 +15,7 @@ import com.pos.commerce.domain.payment.PaymentMethod;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentRequest {
+
     /* @결제 총 금액 */
     private BigDecimal totalAmount;
     /* @결제 방법 */

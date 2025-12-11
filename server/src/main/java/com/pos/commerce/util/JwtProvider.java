@@ -16,7 +16,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
 
     private final String secretKey = "my-very-secure-secret-key-of-at-least-32-bytes!";
-    private final long validityInMilliseconds = 3600000; // 1시간
+    private final long validityInMilliseconds = 86400000L; // 1시간
 
     private final Key key;
 
@@ -33,13 +33,13 @@ public class JwtProvider {
         });
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityInMilliseconds);
-
+        
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
-                .setClaims(claim)
                 .compact();
     }
 
@@ -55,4 +55,17 @@ public class JwtProvider {
                 return false;
         }
     }
-}   
+
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String getUsername(String token) {
+        Claims claims = getClaims(token);
+        return claims.getSubject();
+    }
+}
