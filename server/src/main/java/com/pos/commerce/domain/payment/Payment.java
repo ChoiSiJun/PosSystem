@@ -1,5 +1,6 @@
 package com.pos.commerce.domain.payment;
 
+import com.pos.commerce.infrastructure.config.BigDecimalEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,7 @@ public class Payment {
 
     /* @결제 총 금액 */
     @Column(nullable = false)
+    @Convert(converter = BigDecimalEncryptionConverter.class)
     private BigDecimal totalAmount;
 
     /* @결제 상태 */

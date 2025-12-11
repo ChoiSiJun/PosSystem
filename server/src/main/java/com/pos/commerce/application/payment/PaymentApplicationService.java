@@ -98,7 +98,7 @@ public class PaymentApplicationService implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<Payment> getPaymentsByDateRange(GetPaymentsByDateRangeQuery query) {
-        return paymentRepository.findByShopCodeAndStatusAndCreatedAtBetween( query.shopCode(), PaymentStatus.COMPLETED, query.startDate(), query.endDate());
+        return paymentRepository.findByShopCodeAndStatusAndCreatedAtBetweenOrderByCreatedAtDesc( query.shopCode(), PaymentStatus.COMPLETED, query.startDate(), query.endDate());
     }
 
     /* @결제 준비 상태 조회 */

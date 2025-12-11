@@ -1,5 +1,7 @@
 package com.pos.commerce.domain.payment;
 
+import com.pos.commerce.infrastructure.config.BigDecimalEncryptionConverter;
+import com.pos.commerce.infrastructure.config.IntegerEncryptionConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,14 +40,17 @@ public class PaymentItem {
 
     /* @결제 아이템 수량 */
     @Column(nullable = false)
+    @Convert(converter = IntegerEncryptionConverter.class)
     private Integer quantity;
 
     /* @결제 아이템 단가 */
     @Column(nullable = false)
+    @Convert(converter = BigDecimalEncryptionConverter.class)
     private BigDecimal unitPrice;
 
     /* @결제 아이템 총 금액 */
     @Column(nullable = false)
+    @Convert(converter = BigDecimalEncryptionConverter.class)
     private BigDecimal totalPrice;
 
     /* @결제 아이템 총 금액 계산 */

@@ -37,6 +37,9 @@ spring:
 file:
   upload-dir: uploads/images
 
+encryption:
+  secret-key: MySecretKey123456789012345678901234567890
+
 logging:
   level:
     com.pos.commerce: DEBUG
