@@ -1,54 +1,22 @@
 server:
-  port: 80
+  port: 8081
   tomcat:
-    max-threads: 100
-    max-connections: 1000
-    min-spare-threads: 10
-    max-http-post-size: 10MB
-    max-http-put-size: 10MB
-    max-http-delete-size: 10MB
-    max-http-head-size: 10MB
-    max-http-options-size: 10MB
+    max-threads: 100 # 최대 스레드 수
+    max-connections: 1000 # 최대 연결 수
+    min-spare-threads: 10 # 최소 스레드 수
+    max-http-post-size: 50MB # 최대 POST 요청 크기
+    max-http-put-size: 50MB # 최대 PUT 요청 크기
+    max-http-delete-size: 1MB # 최대 DELETE 요청 크기
+    max-http-head-size: 1MB # 최대 HEAD 요청 크기
+    max-http-options-size: 1MB # 최대 OPTIONS 요청 크기
 
 spring:
   application:
-    name: commerce
+    name: pos-system
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 50MB
-
-  datasource:
-    url: jdbc:postgresql://34.64.50.124:5432/forjun
-    username: forjun
-    password: forjun406
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-file:
-  upload-dir: uploads/images
-
-encryption:
-  secret-key: MySecretKey123456789012345678901234567890
-
-logging:
-  level:
-    com.pos.commerce: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.data.jpa: DEBUG
-    org.springframework.transaction: DEBUG
-    org.springframework.web.servlet: DEBUG
-
-    # 💡 SQL 로그는 별도의 로거 이름으로 분리합니다.
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL 파라미터 바인딩 확인 (TRACE 레벨)
-    org.hibernate.SQL: DEBUG
+      max-file-size: 10MB # 최대 파일 크기
+      max-request-size: 50MB # 최대 요청 크기
+  profiles:
+    active: ${spring.profiles.active:dev} # 프로파일 설정

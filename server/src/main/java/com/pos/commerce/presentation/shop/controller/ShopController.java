@@ -17,59 +17,72 @@ import com.pos.commerce.application.shop.command.AuthenticationShopCommand;
 import com.pos.commerce.application.shop.command.CreateShopCommand;
 import com.pos.commerce.application.shop.command.VerifyAdminPasswordCommand;
 import com.pos.commerce.application.shop.query.GetShopByIdQuery;
-
-import com.pos.commerce.domain.shop.Shop;
 import com.pos.commerce.presentation.common.dto.ApiResponse;
 
-import com.pos.commerce.presentation.shop.dto.ShopRequest;
-import com.pos.commerce.presentation.shop.dto.ShopResponse;
+import com.pos.commerce.presentation.shop.dto.CreateShopRequest;
+import com.pos.commerce.presentation.shop.dto.DetailShopResponse;
+import com.pos.commerce.presentation.shop.dto.LoginShopRequest;
 import com.pos.commerce.presentation.shop.dto.VerifyAdminPasswordRequest;
 import com.pos.commerce.presentation.shop.dto.VerifyAdminPasswordResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+@Tag(name = "매장관리", description = "매장 관리 API")
 @RestController
 @RequestMapping("/api/shops")
 @RequiredArgsConstructor
+
+/* @매장 컨트롤러 */
 public class ShopController {
 
+    /* @매장 서비스 */
     private final ShopService shopService;
 
-    /* @매장 생성 */
+    /* @매장 생성 API */
+    @Operation(summary = "매장 생성", description = "매장을 생성합니다.")
     @PostMapping
-    public ResponseEntity<ApiResponse<ShopResponse>> createShop(@RequestBody ShopRequest request) {
-        Shop shop = shopService.createShop(new CreateShopCommand(
-                request.getShopCode(),
-                request.getShopName(),
-                request.getPassword(),
-                request.getAdminPassword()
-        ));
+    public ResponseEntity<ApiResponse<Void>> createShop(@Valid @RequestBody CreateShopRequest request) {
 
+        /* @매장 생성 명령 */
+        shopService.createShop(
+                new CreateShopCommand(
+                        request.getShopCode(),
+                        request.getShopName(),
+                        request.getPassword(),
+                        request.getAdminPassword()
+                )
+        );
+
+        /* @매장 생성 응답 */
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("매장이 생성되었습니다.", ShopResponse.from(shop)));
+                .body(ApiResponse.success("매장이 생성되었습니다."));
     }
 
     /* @매장 조회 */
+    @Operation(summary = "매장 조회", description = "매장을 조회합니다.")
     @GetMapping("/{shopId}")
-    public ResponseEntity<ApiResponse<ShopResponse>> getShop(@PathVariable Long shopId) {
-        return shopService.getShopById(new GetShopByIdQuery(shopId))
-                .map(shop -> ResponseEntity.ok(ApiResponse.success(ShopResponse.from(shop))))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<DetailShopResponse>> getShop(@PathVariable Long shopId) {
+        return ResponseEntity.ok(ApiResponse.success(DetailShopResponse.from(shopService.getShopById(new GetShopByIdQuery(shopId)))));
     }
 
     /* @매장 로그인 */
+    @Operation(summary = "매장 로그인", description = "매장을 로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> loginShop(@RequestBody ShopRequest request) {
+    public ResponseEntity<ApiResponse<String>> loginShop(@Valid @RequestBody LoginShopRequest request) {
        
-        String token = shopService.loginShop(new AuthenticationShopCommand(request.getShopCode(), request.getPassword()));
-        return ResponseEntity.ok(ApiResponse.success("로그인이 완료되었습니다.", token));
+        return ResponseEntity.ok(ApiResponse.success("로그인이 완료되었습니다.", 
+                shopService.loginShop(new AuthenticationShopCommand(request.getShopCode(), request.getPassword())))
+        );
     }
 
     /* @관리자 비밀번호 검증 */
+    @Operation(summary = "관리자 비밀번호 검증", description = "관리자 비밀번호를 검증합니다.")
     @PostMapping("/{shopCode}/admin/verify")
     public ResponseEntity<ApiResponse<VerifyAdminPasswordResponse>> verifyAdminPassword(
             @PathVariable String shopCode,
-            @RequestBody VerifyAdminPasswordRequest request) {
+            @Valid @RequestBody VerifyAdminPasswordRequest request) {
         
         boolean verified = shopService.verifyAdminPassword(
                 new VerifyAdminPasswordCommand(shopCode, request.getPassword()));

@@ -1,0 +1,41 @@
+# 서버 설정
+server:
+  # 데이터소스 설정
+  datasource:
+    url: jdbc:postgresql://my-postgres:5432/forjun
+    username: forjun
+    password: forjun406
+    driver-class-name: org.postgresql.Driver
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# 파일 업로드 설정
+file:
+  upload-dir: uploads/images
+
+# 암호화 설정
+encryption:
+  secret-key: MySecretKey123456789012345678901234567890
+
+# 로그 설정
+logging:
+  com.pos.commerce: INFO
+
+  # Spring 프레임워크
+  org.springframework.web: INFO
+  org.springframework.security: INFO
+  org.springframework.data.jpa: INFO
+  org.springframework.transaction: INFO
+  org.springframework.web.servlet: INFO
+
+  # 💡 SQL 로그
+  org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  org.hibernate.SQL: WARN

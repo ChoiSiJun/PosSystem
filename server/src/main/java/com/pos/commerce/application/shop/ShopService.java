@@ -1,6 +1,5 @@
 package com.pos.commerce.application.shop;
  
-import java.util.Optional;
 
 import com.pos.commerce.application.shop.command.AuthenticationShopCommand;
 import com.pos.commerce.application.shop.command.CreateShopCommand;
@@ -15,7 +14,7 @@ public interface ShopService {
     Shop createShop(CreateShopCommand command);
 
     /* @매장 조회 */
-    Optional<Shop> getShopById(GetShopByIdQuery query);
+    Shop getShopById(GetShopByIdQuery query);
 
     /* @매장 로그인 */
     String loginShop(AuthenticationShopCommand command);

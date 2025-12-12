@@ -53,9 +53,9 @@ public class ShopApplicationService implements ShopService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Shop> getShopById(GetShopByIdQuery query) {
+    public Shop getShopById(GetShopByIdQuery query) {
         /* 매장 조회 */
-        return shopRepository.findById(query.shopId());
+        return shopRepository.findById(query.shopId()).orElseThrow(() -> new IllegalArgumentException("매장을 찾을 수 없습니다: " + query.shopId()));
     }
 
     @Override
